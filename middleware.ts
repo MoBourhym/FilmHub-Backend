@@ -3,16 +3,14 @@ import { createClient } from "@/lib/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createClient(request);
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!request.nextUrl.pathname.startsWith("/auth")) {
-    console.log("middleware", request.nextUrl.pathname, "\n");
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    if (!session) {
-      return NextResponse.redirect(new URL("/auth", request.url));
-    }
+  if (request.nextUrl.pathname.startsWith("/auth")) {
+    if (session) return NextResponse.redirect(new URL("/", request.url));
+  } else {
+    if (!session) return NextResponse.redirect(new URL("/auth", request.url));
   }
 
   return response;

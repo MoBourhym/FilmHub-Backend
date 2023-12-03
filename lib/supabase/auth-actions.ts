@@ -1,5 +1,6 @@
 "use server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { PrismaClient } from "@prisma/client";
 import { headers } from "next/headers";
 
 export const signIn = async (formData: FormData) => {
@@ -17,7 +18,6 @@ export const signIn = async (formData: FormData) => {
 
 export const signUp = async (formData: FormData) => {
   const origin = headers().get("origin");
-  console.log(formData.get("extraData"));
 
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -45,4 +45,28 @@ export const signOut = async () => {
   const { error } = await supabase.auth.signOut();
 
   return { error };
+};
+
+export const authUser = async () => {
+  const supabase = createSupabaseServerClient();
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+  const prisma = new PrismaClient();
+  const profile = await prisma.profile.findUnique({
+    where: {
+      id: user?.id,
+    },
+  });
+
+  const authUser = error
+    ? null
+    : {
+        email: user?.email,
+        ...profile,
+      };
+
+  return { authUser, error };
 };

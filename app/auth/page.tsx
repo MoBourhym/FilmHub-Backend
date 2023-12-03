@@ -26,6 +26,7 @@ export default function SignInForm() {
   const data = new FormData();
 
   const signIn = async (formData: FormData) => {
+    setErrorMsg("");
     formData.append("email", email);
     formData.append("password", password);
     const { error } = await signInServer(formData);
@@ -33,6 +34,7 @@ export default function SignInForm() {
   };
 
   const signUp = async (formData: FormData) => {
+    setErrorMsg("");
     formData.append("email", email);
     formData.append("password", password);
     formData.append("extraData", JSON.stringify({ username: username }));
@@ -96,8 +98,8 @@ export default function SignInForm() {
                 <Input
                   isRequired
                   label="Username"
+                  name="username"
                   placeholder="Enter your username"
-                  type="text"
                   value={username}
                   onValueChange={setUsername}
                 />
