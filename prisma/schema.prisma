@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
   // previewFeatures = ["multiSchema"]
 }
 
@@ -14,9 +14,8 @@ datasource db {
 }
 
 model Profile {
-  id      String     @id @default(uuid())
+  id        String   @id @default(uuid())
   username  String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
